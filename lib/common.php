@@ -47,8 +47,20 @@ function htmlEscape($html){
 
 function convertSqlDate($sqlDate){
     /* @var $date DateTime */
-    $date = DateTime::createFromFormat('Y-m-d', $sqlDate);
-    return $date->format('d M Y');
+    $date = DateTime::createFromFormat('Y-m-d H:i:s', $sqlDate);
+    return $date->format('d M Y, H:i');
+}
+
+function redirectAndExit($script){
+	//Get domain-relative URL (/whatever.php) out the folder.
+	$relativeUrl = $_SERVER['PHP_SELF'];
+	$urlFolder = substr($relativeUrl, 0, strrpos($relativeUrl, '/') + 1);
+	
+	//Redirect to the full URL (http://host/blog/script.php)
+	$host = $_SERVER['HTTP_HOST'];
+	$fullUrl = 'https://' . $host . $urlFolder . $script;
+	header('Location: ' . $fullUrl);
+	exit();
 }
 
 /**
