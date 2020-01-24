@@ -51,6 +51,21 @@ function convertSqlDate($sqlDate){
     return $date->format('d M Y, H:i');
 }
 
+function getSqlDateForNow(){
+	return date('Y-m-d H:i:s');
+}
+
+/**
+ * Mengamankan text, HTML berparagraf.
+ * 
+ * @param string $text
+ * @return string
+ */
+function convertNewlinesToParagraphs($text){
+	$escaped = htmlEscape($text);
+	return '<p>' . str_replace("\n", "</p><p>", $escaped) . '</p>';
+}
+
 function redirectAndExit($script){
 	//Get domain-relative URL (/whatever.php) out the folder.
 	$relativeUrl = $_SERVER['PHP_SELF'];
@@ -58,7 +73,7 @@ function redirectAndExit($script){
 	
 	//Redirect to the full URL (http://host/blog/script.php)
 	$host = $_SERVER['HTTP_HOST'];
-	$fullUrl = 'https://' . $host . $urlFolder . $script;
+	$fullUrl = 'http://' . $host . $urlFolder . $script;
 	header('Location: ' . $fullUrl);
 	exit();
 }

@@ -22,9 +22,26 @@ if(!$row){
 	redirectAndExit('index.php?not-found=1');
 }
 
-//Tukar pengembalian pembawa untuk spasi paragraf
-$bodyText = htmlEscape($row['body']);
-$paraText = str_replace("\n", "</p><p>", $bodyText)
+$errors = null;
+if($_POST){
+	$commentData = array(
+		'name' => $_POST['comment-name'],
+		'website' => $_POST['comment-website'],
+		'text' => $_POST['comment-text']
+	);
+	$errors = addCommentToPost($pdo, $postId, $commentData);
+
+	//Kalau gak ada eror, reload halaman untuk menampilkan komentar
+	if(!$errors){
+		redirectAndExit('view-post.php?post_id=' . $postId);
+	} else {
+		$commmentData = array(
+			'name' => '',
+			'website' => '',
+			'text' => ''
+		);
+	}
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -44,7 +61,7 @@ $paraText = str_replace("\n", "</p><p>", $bodyText)
             <?php echo convertSqlDate($row['created_at']) ?>
         </div>
         <p>
-            <?php echo $paraText ?>
+            <?php echo convertNewlinesToParagraphs($row['body']) ?>
         </p>
 		<h3> <?php echo countCommentsForPost($postId) ?> comments</h3>
 		
@@ -58,9 +75,10 @@ $paraText = str_replace("\n", "</p><p>", $bodyText)
 					<?php echo convertSqlDate($comment['created_at']) ?>
 				</div>
 				<div class="comment-body">
-					<?php echo htmlEscape($comment['text']) ?>
+					<?php echo convertNewlinesToParagraphs($comment['text']) ?>
 				</div>
 			</div>
-		<?php endforeach ?>			
+		<?php endforeach ?>	
+		<?php include 'templates/comment-form.php' ?>
     </body>
 </html>
