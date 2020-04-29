@@ -52,58 +52,58 @@ function installBlog(PDO $pdo){
     return array($count, $error);
 }
 
+
 /**
  * Creates a new user in the database
- * 
+ *
  * @param PDO $pdo
  * @param string $username
  * @param integer $length
- * @param array Duple of (password, error)
+ * @return array Duple of (password, error)
  */
 function createUser(PDO $pdo, $username, $length = 10){
-    // Random password algorithm
-    $alphabet = range(ord('A'), ord('Z'));
+    // This algorithm creates a random password
+    $alphabet = range(ord('A'), ord('z'));
     $alphabetLength = count($alphabet);
-
     $password = '';
-    for($i=0; $i < $length; $i++){
+    for($i = 0; $i < $length; $i++){
         $letterCode = $alphabet[rand(0, $alphabetLength - 1)];
         $password .= chr($letterCode);
     }
-
     $error = '';
 
     // Insert the credentials into the database
     $sql = "
-        INSET INTO
+        INSERT INTO
             user(username, password, created_at)
-            VALUES(:username, :password, :created_at)
-        ";
+            VALUES (:username, :password, :created_at)
+    ";
     $stmt = $pdo->prepare($sql);
-    if($stmt === false){
+
+    if ($stmt === false){
         $error = 'Could not prepare the user creation';
     }
-
+    
     if (!$error){
-        // Create password hash to protect userinfo
+        // Hash password
         $hash = password_hash($password, PASSWORD_ARGON2ID);
         if($hash === false){
-            $error = 'Password hashing failed';
+            $error = "Password hashing failed";
         }
     }
-
-    // Insert user details, including hashed password
-    if (!$error){
+    if(!$error){
         $result = $stmt->execute(
             array(
                 'username' => $username,
                 'password' => $hash,
-                'created_at' => getSqlDateForNow()
+                'created_at' => getSqlDateForNow(),
             )
         );
+        if ($result === false){
+            $error = 'Could not run the user creation';
+        }
     }
-
-    if($error){
+    if ($error){
         $password = '';
     }
 

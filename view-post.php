@@ -2,6 +2,8 @@
 require_once 'lib/common.php';
 require_once 'lib/view-post.php';
 
+session_start();
+
 // Dapatkan ID postingan
 if (isset($_GET['post_id']))
 {

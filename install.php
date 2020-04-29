@@ -19,8 +19,10 @@ if ($_POST){
 
     $_SESSION['count'] = $rowCounts;
     $_SESSION['error'] = $error;
-    $_SESSION['password'] = $username;
+    $_SESSION['username'] = $username;
+    $_SESSION['password'] = $password;
     $_SESSION['try-install'] = true;
+
     // ... and here we redirect from POST to GET
     redirectAndExit('install.php');
 }
