@@ -1,6 +1,7 @@
 <?php
 /**
  * Gets the root path of the project
+ * Dapatkan alamat root projek
  *
  * @return string
  */
@@ -10,7 +11,8 @@ function getRootPath(){
 
 /**
  * Gets the full path for the database file
- *
+ * Dapatkan alamat lengkap berkas database
+ * 
  * @return string
  */
 function getDatabasePath(){
@@ -19,6 +21,7 @@ function getDatabasePath(){
 
 /**
  * Gets the DSN for the SQLite connection
+ * Dapatkan DSN untuk sambungan SQLite
  *
  * @return string
  */
@@ -28,7 +31,8 @@ function getDsn(){
 
 /**
  * Gets the PDO object for database access
- *
+ * Dapatkan objek PDO untuk akses kanal data
+ * 
  * @return \PDO
  */
 function getPDO(){
