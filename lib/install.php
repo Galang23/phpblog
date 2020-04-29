@@ -84,13 +84,20 @@ function createUser(PDO $pdo, $username, $length = 10){
         $error = 'Could not prepare the user creation';
     }
 
-    // Store password in plaintext
-    // TODO: Add hashing and salting algorithm
+    if (!$error){
+        // Create password hash to protect userinfo
+        $hash = password_hash($password, PASSWORD_ARGON2ID);
+        if($hash === false){
+            $error = 'Password hashing failed';
+        }
+    }
+
+    // Insert user details, including hashed password
     if (!$error){
         $result = $stmt->execute(
             array(
                 'username' => $username,
-                'password' => $password,
+                'password' => $hash,
                 'created_at' => getSqlDateForNow()
             )
         );
