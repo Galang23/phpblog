@@ -1,1 +1,7 @@
 data/data.sqlite
+
+node_modules 
+*.env 
+.env* 
+*.local
+.vscode/
