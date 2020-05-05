@@ -11,6 +11,11 @@ if (version_compare(PHP_VERSION, '7.3.0') < 0){
 }
 
 session_start();
+
+// If logged in, no show
+if (isLoggedIn()){
+    redirectAndExit('index.php');
+}
     
 // Handle the form posting
 $username = '';

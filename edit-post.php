@@ -60,15 +60,25 @@ if ($_POST) {
         redirectAndExit('edit-post.php?post_id=' . $postId);
     }
 }
+
+// Check if create new post or edit existing one
+if(isset($_GET['post_id'])){
+    $pgTitle = "Edit Post";
+}
+else {
+    $pgTitle = "New Post";
+}
 ?>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>A blog application | New post</title>
+        <title>A blog application | <?php echo $pgTitle ?></title>
         <?php require 'templates/head.php' ?>
     </head>
     <body>
-        <?php require 'templates/title.php' ?>
+        <?php require 'templates/top-menu.php' ?>
+
+        <h1><?php echo $pgTitle ?></h1>
 
         <?php if ($errors): ?>
             <div class="error box">
@@ -92,6 +102,7 @@ if ($_POST) {
                 cols="70" rows="12"><?php echo htmlEscape($body) ?></textarea>
             <div>
                 <input type="submit" value="Save post">
+                <a href="indes.php">Cancel</a>
             </div>
         </form>
     </body>
