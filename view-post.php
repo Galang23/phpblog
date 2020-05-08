@@ -5,12 +5,9 @@ require_once 'lib/view-post.php';
 session_start();
 
 // Dapatkan ID postingan
-if (isset($_GET['post_id']))
-{
+if (isset($_GET['post_id'])){
     $postId = $_GET['post_id'];
-}
-else
-{
+} else {
 	// Supaya variabel post ID selalu terdefinisi
     $postId = 0;
 }
@@ -20,34 +17,27 @@ $pdo = getPDO();
 $row = getPostRow($pdo, $postId);
 
 // Tangani pos yang tidak ada
-if (!$row)
-{
+if (!$row){
     redirectAndExit('index.php?not-found=1');
 }
 
 $errors = null;
-if ($_POST)
-{
-    $commentData = array(
-        'name' => $_POST['comment-name'],
-        'website' => $_POST['comment-website'],
-        'text' => $_POST['comment-text'],
-    );
-    $errors = addCommentToPost(
-        $pdo,
-        $postId,
-        $commentData
-    );
-
-	// If there are no errors, redirect back to self and redisplay
-	// Kalau tidak ada eror, redirek ke self dan tampilkan ulang
-    if (!$errors)
-    {
-        redirectAndExit('view-post.php?post_id=' . $postId);
+if ($_POST){
+    switch ($_GET['action']){
+        case 'add-comment':
+            $commentData = array(
+                'name' => $_POST['comment-name'],
+                'website' => $_POST['comment-website'],
+                'text' => $_POST['comment-text']
+            );
+            $errors = handleAddComment($pdo, $postId, $commentData);
+        break;
+        case 'delete-comment':
+            $deleteResponse = $_POST['delete-comment'];
+            handleDeleteComment($pdo, $postId, $deleteResponse);
+        break;
     }
-}
-else
-{
+} else {
     $commentData = array(
         'name' => '',
         'website' => '',
@@ -79,27 +69,9 @@ else
             <?php // Sudah di-escape, tidak perlu escape lanjutan ?>
             <?php echo convertNewlinesToParagraphs($row['body']) ?>
         </div>
-        <div class="comment-list">
-        <h3><?php echo countCommentsForPost($pdo, $postId) ?> comments</h3>
-            <?php foreach (getCommentsForPost($pdo, $postId) as $comment): ?>
-                <?php // For now, we'll use a horizontal rule-off to split it up a bit ?>
-                <?php // Sudah di-escape, tidak perlu escape lanjutan ?>
-                <hr />
-                <div class="comment">
-                    <div class="comment-meta">
-                        Comment from
-                        <?php echo htmlEscape($comment['name']) ?>
-                        on
-                        <?php echo convertSqlDate($comment['created_at']) ?>
-                    </div>
-                    <div class="comment-body">
-                        <?php // This is already escaped ?>
-                        <?php // sudah di-escape ?>
-                        <?php echo convertNewlinesToParagraphs($comment['text']) ?>
-                    </div>
-                </div>
-            <?php endforeach ?>
-        </div>
+        <?php require 'templates/list-comments.php' ?>
+
+        <?php // $commentData is used in this HTML fragment ?>
         <?php require 'templates/comment-form.php' ?>
     </body>
 </html>
