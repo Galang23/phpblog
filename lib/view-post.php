@@ -33,7 +33,7 @@ function handleAddComment(PDO $pdo, $postId, array $commentData){
  * @param integer $postId
  * @param array $deleteReponse
  */
-function handleDeleteComment(PDO $pdo, $postId, array $deleteReponse){
+function handleDeleteComment(PDO $pdo, $postId, array $deleteResponse){
     if (isLoggedIn()){
         $keys = array_keys($deleteResponse);
         $deleteCommentId = $keys[0];
