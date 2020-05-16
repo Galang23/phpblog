@@ -102,7 +102,7 @@ else {
                 cols="70" rows="12"><?php echo htmlEscape($body) ?></textarea>
             <div>
                 <input type="submit" value="Save post">
-                <a href="indes.php">Cancel</a>
+                <a href="index.php">Cancel</a>
             </div>
         </form>
     </body>
