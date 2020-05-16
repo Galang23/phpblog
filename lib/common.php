@@ -67,6 +67,24 @@ function getSqlDateForNow(){
 }
 
 /**
+ * Gets a list of posts in reverse order
+ * 
+ * @param PDO $pdo
+ * @return array
+ */
+function getAllPosts($pdo){
+    $stmt = $pdo->query(
+        'SELECT id, title, created_at, body FROM post
+        ORDER BY created_at DESC'
+    );
+    if ($stmt === false){
+        throw new Exception('There was a problem running this query');
+    }
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
  * Mengamankan text, HTML berparagraf.
  * 
  * @param string $text
@@ -211,7 +229,7 @@ function getAuthUserID(PDO $pdo){
 /**
  * Check one's permission to view the content of the page
  * 
- * @return boolean result
+ * @return boolean $result
  */
 function checkPermission(){
     if (isset($_SESSION['nopermission']) && !isLoggedIn()){
