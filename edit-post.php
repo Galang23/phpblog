@@ -7,6 +7,7 @@ session_start();
 
 // If user is not authenticated, don't let them see this.
 if (!isLoggedIn()){
+    $_SESSION['nopermission'] = true;
     redirectAndExit('index.php');
 }
 

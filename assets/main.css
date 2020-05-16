@@ -36,6 +36,16 @@ h1, h2, h3 {
 body {
     font-family: Arial, Helvetica, sans-serif;
 }
+#post-list {
+    border-collapse: collapse;
+    border: 1px solid silver;
+}
+#post-list td {
+    padding: 8px;
+}
+#post-list tbody tr:nth-child(odd){
+    background-color: #f4f4f4;
+}
 .post-synopsis {
     padding-bottom: 8px;
     border-bottom: 1px dotted silver;

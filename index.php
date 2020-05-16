@@ -26,6 +26,9 @@ $notFound = isset($_GET['not-found']);
         <?php require 'templates/head.php' ?>
     </head>
     <body>
+        <?php if(checkPermission()): ?>
+            <div class="error box"><h1>No permission to view this page.</h1></div>
+        <?php endif ?>
         <?php require 'templates/title.php' ?>
 
         <?php if ($notFound): ?>

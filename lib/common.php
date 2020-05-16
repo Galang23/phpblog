@@ -207,4 +207,19 @@ function getAuthUserID(PDO $pdo){
 
     return $stmt->fetchColumn();
 }
+
+/**
+ * Check one's permission to view the content of the page
+ * 
+ * @return boolean result
+ */
+function checkPermission(){
+    if (isset($_SESSION['nopermission']) && !isLoggedIn()){
+        $result = true;
+    } else if (isset($_SESSION['nopermission']) == false || isLoggedIn()) {
+        $result = false;
+    }
+    unset($_SESSION['nopermission']);
+    return $result;
+}
 ?>

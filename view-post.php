@@ -33,8 +33,13 @@ if ($_POST){
             $errors = handleAddComment($pdo, $postId, $commentData);
         break;
         case 'delete-comment':
-            $deleteResponse = $_POST['delete-comment'];
-            handleDeleteComment($pdo, $postId, $deleteResponse);
+            if (isLoggedIn()){
+                $deleteResponse = $_POST['delete-comment'];
+                handleDeleteComment($pdo, $postId, $deleteResponse);
+            } else {
+                echo "You have no permission to do so!\n";
+                exit();
+            }
         break;
     }
 } else {
