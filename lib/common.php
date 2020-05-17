@@ -1,4 +1,7 @@
 <?php
+
+global $permission;
+
 /**
  * Gets the root path of the project
  * Dapatkan alamat root projek
@@ -74,7 +77,9 @@ function getSqlDateForNow(){
  */
 function getAllPosts($pdo){
     $stmt = $pdo->query(
-        'SELECT id, title, created_at, body FROM post
+        'SELECT id, title, created_at, body,
+        (SELECT COUNT(*) FROM comment WHERE comment.post_id = post.id) comment_count
+        FROM post
         ORDER BY created_at DESC'
     );
     if ($stmt === false){
@@ -108,30 +113,6 @@ function redirectAndExit($script){
 }
 
 /**
- * Returns the number of comments for the specified post
- *
- * @param PDO $pdo
- * @param integer $postId
- * @return integer
- */
-function countCommentsForPost(PDO $pdo, $postId){
-    $sql = "
-        SELECT
-            COUNT(*) c
-        FROM
-            comment
-        WHERE
-            post_id = :post_id
-    ";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(
-        array('post_id' => $postId, )
-    );
-    return (int) $stmt->fetchColumn();
-}
-
-
-/**
  * Returns all the comments for the specified post
  *
  * @param PDO $pdo
@@ -161,7 +142,8 @@ function tryLogin(PDO $pdo, $username, $password){
         FROM
             user
         WHERE
-            username = :username
+            username = :username 
+            AND is_enabled = 1
     ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(
@@ -215,7 +197,7 @@ function getAuthUserID(PDO $pdo){
         return null;
     }
 
-    $sql = "SELECT id FROM user WHERE username = :username";
+    $sql = "SELECT id FROM user WHERE username = :username AND is_enabled = 1";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(
         array(
@@ -261,9 +243,6 @@ function checkPermission(){
         // Or, if a user is logged in, then let them do anything.
         $_SESSION['permission'] = true;
     }
-
-    $result = $_SESSION['permission'];
-    unset($_SESSION['permission']);
-    return $result; 
+    return $_SESSION['permission']; 
 }
 ?>

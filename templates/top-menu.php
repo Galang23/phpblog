@@ -2,9 +2,10 @@
 	<div class="menu-options">
 		<?php if (isLoggedIn()): ?>
 			Hello <?php echo htmlEscape(getAuthUser()) ?>.
-			<a href="list-posts.php">All Posts</a>
-			<a href="edit-post.php">New Post</a>
-			<a href="logout.php">Log out</a>
+			<a href="index.php">Home</a> |
+			<a href="list-posts.php">All Posts</a> |
+			<a href="edit-post.php">New Post</a> |
+			<a href="logout.php">Log out</a> |
 		<?php else: ?>
 			<a href="login.php">Log in</a>
 		<?php endif ?>

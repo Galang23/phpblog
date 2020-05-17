@@ -11,31 +11,40 @@ function deletePost(PDO $pdo, $postId){
     // To delete post, you need to also remove the comments.
     // TO DO so, you need to delete linked comments, then delete the post.
     
-    // First, Delete all comments in the specified post.
-    $sql_comment = "DELETE FROM comment WHERE post_id = :post_id";
-    $stmt_comment = $pdo->prepare($sql_comment);
-    if ($stmt_comment === false){
-        throw new Exception("There was a proble preparing query to delete comments");
-    }
-    $result_comment = $stmt_comment->execute(array(
-        'post_id' => $postId
-    ));
+    $sqls = aray(
+        // Dekete comments first to remove foreign key objection
+        "DELETE FROM comment WHERE post_id = :id",
+        // Then delete the post itself
+        "DELETE FROM post WHERE id = :id"
+    );
 
-    // Then delete the post.
-    $sql_post = "DELETE FROM post WHERE id = :id";
-    $stmt_post = $pdo->prepare($sql_post);
-    if ($stmt_post === false){
-        throw new Exception("There was a proble preparing this query");
-    }
-    $result_post = $stmt_post->execute(array(
-        'id' => $postId
-    ));
+    foreach ($sqls as $sql){
+        $stmt = $pdo->prepare($sql);
+        if ($stmt === false){
+            throw new Exception('There was a problem preparing this query');
+        }
 
-    // Check if everything is done without error
-    if ($result_comment === true && $result_post === true){
-        return $result === true;
+        $result = $stmt->execute(array(
+            'id' => $postId
+        ));
+
+        // Stop if something went wrong
+        if ($result === false){
+            break;
+        }
     }
-    // Return true
+
     return $result !== false;
+}
+
+function countComments(PDO $pdo){
+    $sql = "SELECT COUNT(*) from comment";
+    $stmt = $pdo->prepare($sql);
+    if ($stmt === false){
+        throw new Exception("There was a problem preparing this query");
+    }
+    $result = $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>

@@ -17,6 +17,7 @@ if (isset($_GET['post_id'])){
 // Sambungkan ke database, jalankan query, tangani eror
 $pdo = getPDO();
 $row = getPostRow($pdo, $postId);
+$commentCount = $row['comment_count'];
 
 // Tangani pos yang tidak ada
 if (!$row){

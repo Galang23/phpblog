@@ -79,15 +79,12 @@ function deleteComment(PDO $pdo, $postId, $commentId){
  * @param integer $postId
  * @throws Exception
  */
-function getPostRow(PDO $pdo, $postId)
-{
+function getPostRow(PDO $pdo, $postId){
     $stmt = $pdo->prepare(
-        'SELECT
-            title, created_at, body
-        FROM
-            post
-        WHERE
-            id = :id'
+        'SELECT title, created_at, body,
+        (SELECT COUNT(*) FROM comment WHERE comment.post_id = post.id) comment_count
+        FROM post
+        WHERE id = :id'
     );
     if ($stmt === false)
     {

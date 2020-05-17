@@ -26,6 +26,7 @@ if ($_POST){
 // Connect to DB, run a query
 $pdo = getPDO();
 $posts = getAllPosts($pdo);
+$commentCounts = countComments($pdo);
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,7 +40,8 @@ $posts = getAllPosts($pdo);
             <h1>Done deleted post</h1>
         <?php endif; unset($_SESSION['doneDeletePost']); ?>
         <h1>Posts list</h1>
-        <p>You have <?php echo count($posts) ?> posts.</p>
+        <a href="edit-post.php">Create New Post</a>
+        <p>You have <?php echo count($posts) ?> posts and <?php echo $commentCounts[0]['COUNT(*)'] ?> comments.</p>
         <?php if (count($posts) > 0): ?>
         <form method="POST">
             <table id="post-list">
@@ -58,7 +60,7 @@ $posts = getAllPosts($pdo);
                             <td><?php echo $post['id']; ?></td>
                             <td><a href="view-post.php?post_id=<?php echo $post['id'];?>"><?php echo htmlEscape($post['title'])?></a></td>
                             <td><?php echo convertSqlDate($post['created_at']) ?></td>
-                            <td><?php echo countCommentsForPost($pdo, $post['id']) ?></td>
+                            <td><?php echo $post['comment_count'] ?></td>
                             <td><a href="edit-post.php?post_id=<?php echo $post['id'] ?>"><button type="button" name="edit post">Edit</button></a></td>
                             <td><input type="submit" name="delete-post[<?php echo $post['id'] ?>]" value="Delete"></td>
                         </tr>
@@ -67,6 +69,5 @@ $posts = getAllPosts($pdo);
             </table>
         </form>
         <?php endif ?>
-        <a href="edit-post.php">Create New Post</a>
     </body>
 </html>

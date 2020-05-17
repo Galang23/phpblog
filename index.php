@@ -18,7 +18,7 @@ $notFound = isset($_GET['not-found']);
     <body>
         <?php if(!checkPermission()): ?>
             <div class="error box"><h1>No permission to view this page.</h1></div>
-        <?php endif ?>
+        <?php endif; unset($_SESSION['permission']); ?>
         <?php require 'templates/title.php' ?>
 
         <?php if ($notFound): ?>
@@ -36,7 +36,7 @@ $notFound = isset($_GET['not-found']);
                 <div class="meta">
                     <?php echo convertSqlDate($post['created_at']) ?>
                     
-                    (<?php echo countCommentsForPost($pdo, $post['id']) ?> comments)
+                    (<?php echo $post['comment_count'] ?> comments)
                 </div>
                 <p>
                     <?php echo htmlEscape($post['body']) ?>
