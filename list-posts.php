@@ -4,8 +4,9 @@ require_once 'lib/list-posts.php';
 
 session_start();
 
-if (!isLoggedIn()){
-    $_SESSION['nopermission'] = true;
+// Tetapkan izin untuk melihat halaman ini
+$_SESSION['permission'] = false;
+if (!checkPermission()){
     redirectAndExit('index.php');
 }
 

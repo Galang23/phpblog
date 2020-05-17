@@ -5,9 +5,9 @@ require_once 'lib/view-post.php';
 
 session_start();
 
-// If user is not authenticated, don't let them see this.
-if (!isLoggedIn()){
-    $_SESSION['nopermission'] = true;
+// Tetapkan izin untuk melihat halaman ini
+$_SESSION['permission'] = false;
+if (!checkPermission()){
     redirectAndExit('index.php');
 }
 

@@ -227,17 +227,43 @@ function getAuthUserID(PDO $pdo){
 }
 
 /**
- * Check one's permission to view the content of the page
+ * Check one's permission to view the content of the page.
  * 
  * @return boolean $result
  */
 function checkPermission(){
-    if (isset($_SESSION['nopermission']) && !isLoggedIn()){
-        $result = true;
-    } else if (isset($_SESSION['nopermission']) == false || isLoggedIn()) {
-        $result = false;
+    // First, check if user is logged in.
+
+    if (!isLoggedIn()){
+        // If not logged in, check for permission session variable 
+        // (why? because it's global and idk how to make a variable global)
+
+        if (isset($_SESSION['permission'])){
+            // Then, check the client request method.
+            // POST method is used to create, edit, and post, and delete comment, while
+            // GET is used to show them.
+
+            if ($_POST){
+                // If a user tries to access the create, edit, and delete post or delete comment,
+                // don't let them.
+
+                echo "You have no permission. \n";
+                exit();
+            } else if($_SERVER['REQUEST_METHOD'] == "GET"){
+                // But if user tries to access limited pages, don't let them.
+                $_SESSION['permission'] = false;
+            }
+        } else {
+            // If user does not try to access limited pages, then let them see the page.
+            $_SESSION['permission'] = true;
+        }
+    } else {
+        // Or, if a user is logged in, then let them do anything.
+        $_SESSION['permission'] = true;
     }
-    unset($_SESSION['nopermission']);
-    return $result;
+
+    $result = $_SESSION['permission'];
+    unset($_SESSION['permission']);
+    return $result; 
 }
 ?>

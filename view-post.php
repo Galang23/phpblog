@@ -3,6 +3,8 @@ require_once 'lib/common.php';
 require_once 'lib/view-post.php';
 
 session_start();
+// Tetapkan izin untuk menghapus komentar
+$_SESSION['permission'] = false;
 
 // Dapatkan ID postingan
 if (isset($_GET['post_id'])){
@@ -33,13 +35,9 @@ if ($_POST){
             $errors = handleAddComment($pdo, $postId, $commentData);
         break;
         case 'delete-comment':
-            if (isLoggedIn()){
-                $deleteResponse = $_POST['delete-comment'];
-                handleDeleteComment($pdo, $postId, $deleteResponse);
-            } else {
-                echo "You have no permission to do so!\n";
-                exit();
-            }
+            checkPermission();
+            $deleteResponse = $_POST['delete-comment'];
+            handleDeleteComment($pdo, $postId, $deleteResponse);
         break;
     }
 } else {
