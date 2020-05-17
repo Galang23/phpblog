@@ -1,0 +1,3 @@
+(A) Tidy up code style+phpblog +programming +project
+(B) Create UI for installer +phpblog +programming +project
+(B) Release version 0.1.0 +phpblog +programming +project
